@@ -1,0 +1,78 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Cube : MonoBehaviour
+{
+    public MeshRenderer Renderer;
+
+    // Editar inspector
+    public Vector3 startPosition = new Vector3(3, 4, 1);      
+    public Vector3 cubeScale = Vector3.one * 1.3f;                 
+    public Color cubeColor = new Color(0.5f, 1.0f, 0.3f, 0.4f);  
+
+    public float rotationSpeedX = 10.0f;              
+    public float rotationSpeedY = 10.0f;                       
+    public float rotationSpeedZ = 10.0f;                  
+
+    public float blinkInterval = 1.0f;                    // Intervalo de cambio
+    public float minScale = 0.5f;                // Escala min aleatoria
+    public float maxScale = 2.0f;           // Escala max aleatoria
+
+    private float nextBlinkTime = 1.0f;    // Tiempo proximo cambio
+    private Material material;             // Material cubo
+
+    void Start()
+    {
+        // Establece valores iniciales
+        transform.position = startPosition;
+        transform.localScale = cubeScale;
+
+        material = Renderer.material;
+        material.color = cubeColor;
+    }
+
+    void Update() 
+    {
+    
+        transform.Rotate(
+            rotationSpeedX * Time.deltaTime,
+            rotationSpeedY * Time.deltaTime,
+            rotationSpeedZ * Time.deltaTime
+        );
+
+        // Cambia valores cada cierto tiempo
+        if (Time.time >= nextBlinkTime)
+        {
+            ChangeMaterialColor();
+            ChangePosition();
+            ChangeScale();
+
+            nextBlinkTime = Time.time + blinkInterval;
+        }
+    }
+
+    // Cambia el color del cubo aleatoriamente 
+    private void ChangeMaterialColor()
+    {
+        Color newColor = new Color(Random.value, Random.value, Random.value, cubeColor.a);
+        material.color = newColor;
+    }
+
+    // Cambia la posicion del cubo aleatoriamente 
+    private void ChangePosition()
+    {
+        float newX = Random.Range(-5f, 5f);
+        float newY = Random.Range(1f, 6f);
+        float newZ = Random.Range(-5f, 5f);
+
+        transform.position = new Vector3(newX, newY, newZ);
+    }
+
+    // Cambia la escala del cubo aleatoriamente dentro de un rango
+    private void ChangeScale()
+    {
+        float newScale = Random.Range(minScale, maxScale);
+        transform.localScale = Vector3.one * newScale;
+    }
+}
